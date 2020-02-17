@@ -1,12 +1,20 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import * as serviceWorker from './serviceWorker';
+import React from "react";
+import ReactDOM from "react-dom";
+import { Provider } from "mobx-react";
+import * as stores from "./stores/stores"; //mobx stores
+import createRouter from "./navigation/create-router5";
+import MainNode from "./app/layout/MainNode";
 
-ReactDOM.render(<App />, document.getElementById('root'));
+const router = createRouter(true);
 
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();
+// Provider will add all the mobx stores (including the routerStore) in context.
+const wrappedApp = (
+    <Provider {...stores}>
+        <MainNode />
+    </Provider>
+);
+
+// Renders the entire app when the router starts
+router.start((err, state) => {
+    ReactDOM.render(wrappedApp, document.getElementById("root"));
+});
